@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+
 const { Schema, model } = mongoose;
 
 const imageSchema = new mongoose.Schema({
@@ -7,6 +8,7 @@ const imageSchema = new mongoose.Schema({
   path: {
     type: String,
     required: true,
+    unique: true,
   },
 });
 
@@ -36,8 +38,8 @@ const projectSchema = new Schema({
 
   owner: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "admin",
+    ref: 'admin',
   },
 });
 
-module.exports = model("project", projectSchema);
+module.exports = model('project', projectSchema);

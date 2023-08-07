@@ -1,4 +1,4 @@
-const News = require('../models/news');
+const Project = require('../models/project');
 const { BadRequest } = require('../errors/badrequest');
 const { Forbidden } = require('../errors/forbidden');
 const { NotFound } = require('../errors/notfound');
@@ -8,12 +8,11 @@ const {
   BAD_REQUEST_CARD,
 } = require('../utils/errors-message');
 
-const createNews = (req, res, next) => {
+const createProject = (req, res, next) => {
   const {
-    createdAt, title, slug, tags, preview, article, image,
+    title, slug, tags, preview, article, image,
   } = req.body;
-  News.create({
-    createdAt,
+  Project.create({
     title,
     slug,
     tags,
@@ -22,8 +21,8 @@ const createNews = (req, res, next) => {
     image,
     owner: req.user._id,
   })
-    .then((news) => {
-      res.status(201).send(news);
+    .then((project) => {
+      res.status(201).send(project);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -34,17 +33,15 @@ const createNews = (req, res, next) => {
     });
 };
 
-const deleteNews = (req, res, next) => {
-  News.findById(req.params._id)
+const deleteProject = (req, res, next) => {
+  Project.findById(req.params._id)
     .orFail(() => {
       throw new NotFound(NOT_FOUND_CARD);
     })
-    .then((news) => {
-      // console.log(news.owner.toString());
-      // console.log(req.user._id);
-      if (news.owner.toString() === req.user._id) {
-        News.deleteOne(news)
-          .then(() => res.status(200).send(news))
+    .then((project) => {
+      if (project.owner.toString() === req.user._id) {
+        Project.deleteOne(project)
+          .then(() => res.status(200).send(project))
           .catch(next);
       } else {
         throw new Forbidden();
@@ -59,14 +56,13 @@ const deleteNews = (req, res, next) => {
     });
 };
 
-const updateNews = (req, res, next) => {
+const updateProject = (req, res, next) => {
   const {
-    createdAt, title, slug, tags, preview, article, image,
+    title, slug, tags, preview, article, image,
   } = req.body;
-  News.findByIdAndUpdate(
+  Project.findByIdAndUpdate(
     req.params._id,
     {
-      createdAt,
       title,
       slug,
       tags,
@@ -83,7 +79,7 @@ const updateNews = (req, res, next) => {
     .orFail(() => {
       throw new NotFound(NOT_FOUND_CARD);
     })
-    .then((news) => res.status(200).send(news))
+    .then((project) => res.status(200).send(project))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequest(BAD_REQUEST_CARD));
@@ -93,15 +89,15 @@ const updateNews = (req, res, next) => {
     });
 };
 
-const getAllNews = (req, res, next) => {
-  News.find({})
-    .then((news) => res.status(200).send(news))
+const getAllProject = (req, res, next) => {
+  Project.find({})
+    .then((project) => res.status(200).send(project))
     .catch(next);
 };
 
 module.exports = {
-  createNews,
-  deleteNews,
-  getAllNews,
-  updateNews,
+  createProject,
+  deleteProject,
+  getAllProject,
+  updateProject,
 };

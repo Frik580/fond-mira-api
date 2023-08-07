@@ -1,5 +1,5 @@
 const { celebrate, Joi } = require('celebrate');
-const validator = require('validator');
+// const validator = require('validator');
 const { passwordPattern, datePattern } = require('../utils/constants');
 
 // const validateDeleteUser = celebrate({
