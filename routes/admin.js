@@ -1,25 +1,23 @@
-const router = require("express").Router();
+const router = require('express').Router();
 const auth = require('../middlewares/auth');
 const {
   createAdmin,
   login,
   deleteAdmin,
   getAllAdmins,
-} = require("../controllers/admin");
+} = require('../controllers/admin');
 const {
   validateCreateAdmin,
   validateLogin,
   validateDeleteAdmin,
-} = require("../middlewares/validation");
+} = require('../middlewares/validation');
 
 router.post('/signup', validateCreateAdmin, createAdmin);
 
 router.post('/signin', validateLogin, login);
 
-router.use(auth);
+router.get('/admin', auth, getAllAdmins);
 
-router.get('/admin', getAllAdmins);
-
-router.delete('/admin/:_id', validateDeleteAdmin, deleteAdmin);
+router.delete('/admin/:_id', auth, validateDeleteAdmin, deleteAdmin);
 
 module.exports = router;

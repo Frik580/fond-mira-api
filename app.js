@@ -1,14 +1,14 @@
-// require("dotenv").config();
+require('dotenv').config();
 
-const express = require("express");
-// const cors = require("cors");
-// const helmet = require("helmet");
-const mongoose = require("mongoose");
-// const { errors } = require("celebrate");
-const router = require("./routes/index");
-const { requestLogger, errorLogger } = require("./middlewares/logger");
-const { limiter } = require("./middlewares/limiter");
-const centerErrors = require("./middlewares/errors");
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const mongoose = require('mongoose');
+const { errors } = require('celebrate');
+const router = require('./routes/index');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { limiter } = require('./middlewares/limiter');
+const centerErrors = require('./middlewares/errors');
 
 const { NODE_ENV, DB_ROUTE } = process.env;
 
@@ -25,12 +25,14 @@ app.use(limiter);
 const { PORT = 3001 } = process.env;
 
 mongoose.connect(
-  NODE_ENV === "production" ? DB_ROUTE : "mongodb://localhost:27017/fonddb"
+  NODE_ENV === 'production' ? DB_ROUTE : 'mongodb://127.0.0.1:27017/fond',
 );
+
+// mongoose.connect('mongodb://127.0.0.1:27017/fond');
 
 app.use(express.json());
 
-app.use("/", router);
+app.use('/', router);
 
 app.use(errorLogger);
 

@@ -1,6 +1,6 @@
-const { celebrate, Joi } = require("celebrate");
-const validator = require("validator");
-const { passwordPattern } = require("../utils/constants");
+const { celebrate, Joi } = require('celebrate');
+const validator = require('validator');
+const { passwordPattern, datePattern } = require('../utils/constants');
 
 // const validateDeleteUser = celebrate({
 //   params: Joi.object().keys({
@@ -40,7 +40,7 @@ const validateUpdateNews = celebrate({
     _id: Joi.string().required().hex().length(24),
   }),
   body: Joi.object().keys({
-    createdAt: Joi.string().required(),
+    createdAt: Joi.string().required().pattern(new RegExp(datePattern)),
     title: Joi.string().required(),
     slug: Joi.string().required(),
     tags: Joi.array().items(Joi.string()),
@@ -49,7 +49,7 @@ const validateUpdateNews = celebrate({
     image: Joi.array().items({
       name: Joi.string(),
       description: Joi.string(),
-      path: Joi.string().required(),
+      path: Joi.string().required(), // ?
     }),
   }),
 });
@@ -62,7 +62,7 @@ const validateDeleteNews = celebrate({
 
 const validateCreateNews = celebrate({
   body: Joi.object().keys({
-    createdAt: Joi.string().required(),
+    createdAt: Joi.string().required().pattern(new RegExp(datePattern)),
     title: Joi.string().required(),
     slug: Joi.string().required(),
     tags: Joi.array().items(Joi.string()),
@@ -77,12 +77,12 @@ const validateCreateNews = celebrate({
 });
 
 module.exports = {
-  validateCreateUser,
+  // validateCreateUser,
   validateLogin,
   validateUpdateNews,
   validateDeleteNews,
   validateCreateNews,
-  validateDeleteUser,
+  // validateDeleteUser,
   validateCreateAdmin,
   validateDeleteAdmin,
 };

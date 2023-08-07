@@ -1,4 +1,6 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+const { datePattern } = require('../utils/constants');
+
 const { Schema, model } = mongoose;
 
 const imageSchema = new mongoose.Schema({
@@ -7,13 +9,20 @@ const imageSchema = new mongoose.Schema({
   path: {
     type: String,
     required: true,
+    unique: true,
   },
 });
 
 const newsSchema = new Schema({
   createdAt: {
-    type: Date,
+    type: String,
     required: true,
+    validate: {
+      validator(v) {
+        return datePattern.test(v);
+      },
+      message: 'Передан некорректный формат даты',
+    },
   },
   title: {
     type: String,
@@ -40,8 +49,8 @@ const newsSchema = new Schema({
 
   owner: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "admin",
+    ref: 'admin',
   },
 });
 
-module.exports = model("news", newsSchema);
+module.exports = model('news', newsSchema);
