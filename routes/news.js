@@ -7,14 +7,14 @@ const {
   getAllNews,
 } = require('../controllers/news');
 const {
-  validateDeleteNews,
+  validateDelete,
   validateCreateNews,
   validateUpdateNews,
 } = require('../middlewares/validation');
 
 router.get('/news', getAllNews);
 
-router.delete('/news/:_id', auth, validateDeleteNews, deleteNews);
+router.delete('/news/:_id', auth, validateDelete, deleteNews);
 
 router.post('/news', auth, validateCreateNews, createNews);
 

@@ -9,7 +9,7 @@ const {
 const {
   validateCreateAdmin,
   validateLogin,
-  validateDeleteAdmin,
+  validateDelete,
 } = require('../middlewares/validation');
 
 router.post('/signup', validateCreateAdmin, createAdmin);
@@ -18,6 +18,6 @@ router.post('/signin', validateLogin, login);
 
 router.get('/admin', auth, getAllAdmins);
 
-router.delete('/admin/:_id', auth, validateDeleteAdmin, deleteAdmin);
+router.delete('/admin/:_id', auth, validateDelete, deleteAdmin);
 
 module.exports = router;
