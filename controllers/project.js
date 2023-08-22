@@ -2,17 +2,20 @@ const Project = require('../models/project');
 const { BadRequest } = require('../errors/badrequest');
 const { Forbidden } = require('../errors/forbidden');
 const { NotFound } = require('../errors/notfound');
+const { ConflictError } = require('../errors/conflicterror');
 const {
   BAD_REQUEST,
-  NOT_FOUND_CARD,
-  BAD_REQUEST_CARD,
+  NOT_FOUND_TEXT,
+  BAD_REQUEST_TEXT,
+  CONFLICT_ERROR_SLUG,
+  CONFLICT_ERROR_IMAGE,
 } = require('../utils/errors-message');
 
-const createProject = (req, res, next) => {
+const createProject = async (req, res, next) => {
   const {
     title, slug, tags, preview, article, image,
   } = req.body;
-  Project.create({
+  await Project.create({
     title,
     slug,
     tags,
@@ -25,7 +28,11 @@ const createProject = (req, res, next) => {
       res.status(201).send(project);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (Object.keys(err.keyValue).toString() === 'slug') {
+        next(new ConflictError(CONFLICT_ERROR_SLUG));
+      } else if (Object.keys(err.keyValue).toString() === 'image.path') {
+        next(new ConflictError(CONFLICT_ERROR_IMAGE));
+      } else if (err.name === 'ValidationError') {
         next(new BadRequest(BAD_REQUEST));
       } else {
         next(err);
@@ -36,7 +43,7 @@ const createProject = (req, res, next) => {
 const deleteProject = (req, res, next) => {
   Project.findById(req.params._id)
     .orFail(() => {
-      throw new NotFound(NOT_FOUND_CARD);
+      throw new NotFound(NOT_FOUND_TEXT);
     })
     .then((project) => {
       if (project.owner.toString() === req.user._id) {
@@ -49,7 +56,7 @@ const deleteProject = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequest(BAD_REQUEST_CARD));
+        next(new BadRequest(BAD_REQUEST_TEXT));
       } else {
         next(err);
       }
@@ -77,12 +84,16 @@ const updateProject = (req, res, next) => {
     },
   )
     .orFail(() => {
-      throw new NotFound(NOT_FOUND_CARD);
+      throw new NotFound(NOT_FOUND_TEXT);
     })
     .then((project) => res.status(200).send(project))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new BadRequest(BAD_REQUEST_CARD));
+      if (Object.keys(err.keyValue).toString() === 'slug') {
+        next(new ConflictError(CONFLICT_ERROR_SLUG));
+      } else if (Object.keys(err.keyValue).toString() === 'image.path') {
+        next(new ConflictError(CONFLICT_ERROR_IMAGE));
+      } else if (err.name === 'ValidationError') {
+        next(new BadRequest(BAD_REQUEST_TEXT));
       } else {
         next(err);
       }

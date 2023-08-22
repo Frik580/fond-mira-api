@@ -2,10 +2,13 @@ const News = require('../models/news');
 const { BadRequest } = require('../errors/badrequest');
 const { Forbidden } = require('../errors/forbidden');
 const { NotFound } = require('../errors/notfound');
+const { ConflictError } = require('../errors/conflicterror');
 const {
   BAD_REQUEST,
-  NOT_FOUND_CARD,
-  BAD_REQUEST_CARD,
+  NOT_FOUND_TEXT,
+  BAD_REQUEST_TEXT,
+  CONFLICT_ERROR_SLUG,
+  CONFLICT_ERROR_IMAGE,
 } = require('../utils/errors-message');
 
 const createNews = (req, res, next) => {
@@ -26,7 +29,11 @@ const createNews = (req, res, next) => {
       res.status(201).send(news);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (Object.keys(err.keyValue).toString() === 'slug') {
+        next(new ConflictError(CONFLICT_ERROR_SLUG));
+      } else if (Object.keys(err.keyValue).toString() === 'image.path') {
+        next(new ConflictError(CONFLICT_ERROR_IMAGE));
+      } else if (err.name === 'ValidationError') {
         next(new BadRequest(BAD_REQUEST));
       } else {
         next(err);
@@ -37,11 +44,9 @@ const createNews = (req, res, next) => {
 const deleteNews = (req, res, next) => {
   News.findById(req.params._id)
     .orFail(() => {
-      throw new NotFound(NOT_FOUND_CARD);
+      throw new NotFound(NOT_FOUND_TEXT);
     })
     .then((news) => {
-      // console.log(news.owner.toString());
-      // console.log(req.user._id);
       if (news.owner.toString() === req.user._id) {
         News.deleteOne(news)
           .then(() => res.status(200).send(news))
@@ -52,7 +57,7 @@ const deleteNews = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequest(BAD_REQUEST_CARD));
+        next(new BadRequest(BAD_REQUEST_TEXT));
       } else {
         next(err);
       }
@@ -81,12 +86,16 @@ const updateNews = (req, res, next) => {
     },
   )
     .orFail(() => {
-      throw new NotFound(NOT_FOUND_CARD);
+      throw new NotFound(NOT_FOUND_TEXT);
     })
     .then((news) => res.status(200).send(news))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new BadRequest(BAD_REQUEST_CARD));
+      if (Object.keys(err.keyValue).toString() === 'slug') {
+        next(new ConflictError(CONFLICT_ERROR_SLUG));
+      } else if (Object.keys(err.keyValue).toString() === 'image.path') {
+        next(new ConflictError(CONFLICT_ERROR_IMAGE));
+      } else if (err.name === 'ValidationError') {
+        next(new BadRequest(BAD_REQUEST_TEXT));
       } else {
         next(err);
       }

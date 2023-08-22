@@ -59,6 +59,19 @@ const validateUpdateNews = celebrate({
   }),
 });
 
+// topNews
+const validateCreateTopNews = celebrate({
+  body: Joi.object().keys({
+    title: Joi.string().required(),
+    preview: Joi.string().required().max(200),
+    image: Joi.object().keys({
+      name: Joi.string(),
+      description: Joi.string(),
+      path: Joi.string().required(),
+    }),
+  }),
+});
+
 // project
 const validateCreateProject = celebrate({
   body: Joi.object().keys({
@@ -101,4 +114,5 @@ module.exports = {
   validateUpdateNews,
   validateCreateProject,
   validateUpdateProject,
+  validateCreateTopNews,
 };
