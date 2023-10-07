@@ -8,12 +8,11 @@ const {
   NOT_FOUND_TEXT,
   BAD_REQUEST_TEXT,
   CONFLICT_ERROR_SLUG,
-  CONFLICT_ERROR_IMAGE,
 } = require('../utils/errors-message');
 
 const createNews = (req, res, next) => {
   const {
-    createdAt, title, slug, tags, preview, article, image,
+    createdAt, title, slug, tags, preview, article, photo, video,
   } = req.body;
   News.create({
     createdAt,
@@ -22,17 +21,17 @@ const createNews = (req, res, next) => {
     tags,
     preview,
     article,
-    image,
+    photo,
+    video,
     owner: req.user._id,
   })
     .then((news) => {
       res.status(201).send(news);
     })
     .catch((err) => {
+      console.log(err);
       if (Object.keys(err.keyValue).toString() === 'slug') {
         next(new ConflictError(CONFLICT_ERROR_SLUG));
-      } else if (Object.keys(err.keyValue).toString() === 'image.path') {
-        next(new ConflictError(CONFLICT_ERROR_IMAGE));
       } else if (err.name === 'ValidationError') {
         next(new BadRequest(BAD_REQUEST));
       } else {
@@ -66,7 +65,7 @@ const deleteNews = (req, res, next) => {
 
 const updateNews = (req, res, next) => {
   const {
-    createdAt, title, slug, tags, preview, article, image,
+    createdAt, title, slug, tags, preview, article, photo, video,
   } = req.body;
   News.findByIdAndUpdate(
     req.params._id,
@@ -77,7 +76,8 @@ const updateNews = (req, res, next) => {
       tags,
       preview,
       article,
-      image,
+      photo,
+      video,
     },
     {
       new: true,
@@ -92,8 +92,6 @@ const updateNews = (req, res, next) => {
     .catch((err) => {
       if (Object.keys(err.keyValue).toString() === 'slug') {
         next(new ConflictError(CONFLICT_ERROR_SLUG));
-      } else if (Object.keys(err.keyValue).toString() === 'image.path') {
-        next(new ConflictError(CONFLICT_ERROR_IMAGE));
       } else if (err.name === 'ValidationError') {
         next(new BadRequest(BAD_REQUEST_TEXT));
       } else {

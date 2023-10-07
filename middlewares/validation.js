@@ -32,11 +32,8 @@ const validateCreateNews = celebrate({
     tags: Joi.array().items(Joi.string()),
     preview: Joi.string().required().max(200),
     article: Joi.array().items(Joi.string().required()),
-    image: Joi.array().items({
-      name: Joi.string(),
-      description: Joi.string(),
-      path: Joi.string().required(),
-    }),
+    photo: Joi.number().required(),
+    video: Joi.array().items(Joi.string()),
   }),
 });
 
@@ -51,11 +48,8 @@ const validateUpdateNews = celebrate({
     tags: Joi.array().items(Joi.string()),
     preview: Joi.string().required().max(200),
     article: Joi.array().items(Joi.string().required()),
-    image: Joi.array().items({
-      name: Joi.string(),
-      description: Joi.string(),
-      path: Joi.string().required(), // ?
-    }),
+    photo: Joi.number().required(),
+    video: Joi.array().items(Joi.string()),
   }),
 });
 

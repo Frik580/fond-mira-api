@@ -25,7 +25,7 @@ app.use(limiter);
 const { PORT = 3001 } = process.env;
 
 mongoose.connect(
-  NODE_ENV === 'production' ? DB_ROUTE : 'mongodb://127.0.0.1:27017/fond',
+  NODE_ENV === 'production' ? DB_ROUTE : 'mongodb://127.0.0.1:27017/fondbd',
 );
 
 // mongoose.connect('mongodb://127.0.0.1:27017/fond');

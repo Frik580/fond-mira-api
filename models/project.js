@@ -7,8 +7,8 @@ const imageSchema = new mongoose.Schema({
   description: String,
   path: {
     type: String,
-    required: true,
-    unique: true,
+    // required: true,
+    // unique: true,
   },
 });
 

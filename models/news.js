@@ -3,15 +3,15 @@ const { datePattern } = require('../utils/constants');
 
 const { Schema, model } = mongoose;
 
-const imageSchema = new mongoose.Schema({
-  name: String,
-  description: String,
-  path: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-});
+// const mediaSchema = new mongoose.Schema({
+//   name: String,
+//   description: String,
+//   path: {
+//     type: String,
+//     required: true,
+//     unique: true,
+//   },
+// });
 
 const newsSchema = new Schema({
   createdAt: {
@@ -45,7 +45,11 @@ const newsSchema = new Schema({
       required: true,
     },
   ],
-  image: [imageSchema],
+  photo: {
+    type: Number,
+    required: true,
+  },
+  video: [String],
 
   owner: {
     type: mongoose.Schema.Types.ObjectId,
